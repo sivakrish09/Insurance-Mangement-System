@@ -1,0 +1,26 @@
+<template>
+    <lightning-card title="Policy Holder Registration">
+        <lightning-record-edit-form
+            object-api-name={objApi}
+            field-names={fieldArray}
+            onsuccess={formHandler}>
+                <div class="slds-grid slds-align_absolute-center">
+                    <div class="slds-col slds-size_1-of-2">
+                        <lightning-input-field field-name={Name}></lightning-input-field>
+                        <lightning-input-field field-name={DOB}></lightning-input-field>
+                        <lightning-input-field field-name={Gender}></lightning-input-field>
+                        <lightning-input-field field-name={Phone}></lightning-input-field>
+                        <lightning-input-field field-name={Email}></lightning-input-field>
+                        <lightning-input-field field-name={Occupation}></lightning-input-field>
+                        <lightning-input-field field-name={Income}></lightning-input-field>
+                        <lightning-input-field field-name={Address}></lightning-input-field>
+                        <lightning-input-field field-name={AgentID}></lightning-input-field>
+                    </div>
+                </div>
+                <div class="slds-align_absolute-center"> 
+                    <lightning-button type="submit" variant="brand" label="submit"></lightning-button>
+                </div>
+               
+        </lightning-record-edit-form>
+    </lightning-card>
+</template>
