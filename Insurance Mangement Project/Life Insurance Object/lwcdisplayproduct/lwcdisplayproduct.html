@@ -1,0 +1,45 @@
+<template>
+    <lightning-card title="View your insurance details">
+        <div class="slds-card">
+            <div class="slds-p-around_medium">
+                <lightning-input type="search" label="Enter Your Policy Id" value={InputValue} onchange={UserInput}></lightning-input>
+            </div>   
+        </div>
+      
+            <div class="slds-p-around_medium">
+                 <lightning-button label="Search" onclick={HandleName} ></lightning-button>
+            </div>
+            <div class="slds-grid slds-grid_vertical">
+                <div class="slds-col">
+                    <template if:true={LICrecords}>
+                        <div class="slds-text-align_center" style="background:#dff516">
+                            <div class="slds-p-around_medium">
+                                <h2>Life insurance</h2>
+                            </div>
+                        </div> 
+                   
+                            <lightning-datatable
+                                    key-field="Id"
+                                    columns={LICHeading}
+                                    data={LICrecords}>
+                            </lightning-datatable>
+                    </template>
+                </div>
+                
+                <div class="slds-col">
+                    <template if:true={MIrecords}>
+                        <div class="slds-text-align_center" style="background:#dff516" >
+                            <div class="slds-p-around_medium">
+                                <h5>Motor insurance</h5>
+                            </div>
+                        </div> 
+                            <lightning-datatable
+                                    key-field="Id"
+                                    columns={MIHeading}
+                                    data={MIrecords}>
+                            </lightning-datatable>
+                    </template>
+                </div>
+            </div>
+    </lightning-card>
+</template>	
