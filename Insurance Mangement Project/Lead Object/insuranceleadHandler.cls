@@ -1,5 +1,6 @@
 public class insuranceleadHandler {
     
+	// convert qualified lead into policy holder record
     public static void convertintoPolicyHolder (list<lead> newlead, list<lead> oldlead)
     {
 		list<Policy_Holder__c> pHlist = new list<Policy_Holder__c>();
