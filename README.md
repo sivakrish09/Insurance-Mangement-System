@@ -9,9 +9,7 @@ Requirements:
 
 Implementation:
   Site: 
-    Insurance site (public) - https://sivasubramaniyan-developer-edition.ap16.force.com/Insurance/s/
-    
-    Agent site (private)    - https://sivasubramaniyan-developer-edition.ap16.force.com/InsuranceAgents
-    
-    Customer site(private)  - https://sivasubramaniyan-developer-edition.ap16.force.com/InsuranceClient
+    Insurance site (public) - https://sivasubramaniyan-developer-edition.ap16.force.com/Insurance/s/ 
+    Agent site (private)    - https://sivasubramaniyan-developer-edition.ap16.force.com/InsuranceAgents/s/
+    Customer site(private)  - https://sivasubramaniyan-developer-edition.ap16.force.com/InsuranceClient/s/
 
