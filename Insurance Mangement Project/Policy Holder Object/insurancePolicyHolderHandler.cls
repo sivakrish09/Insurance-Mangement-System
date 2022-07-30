@@ -1,61 +1,82 @@
 public class insurancePolicyHolderHandler
 {
-    public static void contactCreate(list<Policy_Holder__c> leadlist)
+    public static void contactCreate(list<Policy_Holder__c> oldLead, list<Policy_Holder__c> newlead)
     {
+        Account InsAccountID = [SELECT id FROM Account WHERE Name = 'Insurance Company Clients'];
         list<contact> conlist = new list<contact>();
-        contact phContact = new contact();
-        for(Policy_Holder__c phList:leadlist )
+        
+        for(Policy_Holder__c oldRecord: oldLead)
         {
-            phContact.AccountId='0012w00000zSPNcAAO';
-            phContact.Email = phlist.Email__c;
-            phContact.LastName = phlist.Name__c;
-            phContact.Phone = phlist.Phone__c;
-            conlist.add(phContact);
+           if(oldRecord.Request_Status__c != 'Background Verification- Completed')
+           {
+               for(Policy_Holder__c newRecord : newlead)
+               {
+                   if(newRecord.Request_Status__c == 'Background Verification- Completed')
+                   {
+                       Contact phContact = new Contact();
+                        phContact.AccountId=InsAccountID.Id;
+                        phContact.Email = newRecord.Email__c;
+                        phContact.LastName = newRecord.Name;
+                        phContact.Phone = newRecord.Phone__c;
+                       	phContact.Policy_Holder__c = newRecord.Id;
+                        conlist.add(phContact);
+                   }
+               }
+           }
         }
-        insert conlist;
+       	insert conlist;
     }
-    public static void createnewuser(list<Policy_Holder__c> NewRecords,list<Policy_Holder__c> oldRecords)
-    {	
-        Profile clientProfileId= [SELECT Id FROM Profile WHERE Name ='Insurance Policy User']; 
-		list<User> userList = new list<user>();
-        set<string> PhEmailId = new set<string>();
-        for (Policy_Holder__c phEmails : NewRecords)
+  	public static void UserCreate(list<Policy_Holder__c> oldLeads, list<Policy_Holder__c> newleads)
+    {
+        set<Id> PolicyId = new set<Id>();
+        
+        for (Policy_Holder__c oldrecord: oldLeads)
         {
-			if(phEmails.Request_Status__c == 'Approved' && phEmails.Do_you_want_to_create_user_ID__c == 'Yes')
+             if(oldrecord.Request_Status__c != 'Approved' && oldrecord.Do_you_want_to_create_user_ID__c	 !='Yes')
+             {
+                 for (Policy_Holder__c newRecord: newleads)
+                 {
+                     if(newRecord.Request_Status__c == 'Approved' && newRecord.Do_you_want_to_create_user_ID__c	 =='Yes')
+                     {
+                         PolicyId.add(newRecord.Id);
+                     }
+                 }
+             }
+        }
+        Map<String,Id> ContactMap = new Map<String,Id>();
+        List<Contact> contactId = [SELECT Id,Policy_Holder__c FROM Contact WHERE Policy_Holder__c =: PolicyId ];
+        for(Contact con:contactId )
+        {
+			ContactMap.put(con.Policy_Holder__c,con.id);
+            
+        }
+        Profile ClientProfileId =[SELECT Id FROM Profile WHERE Name ='Insurance Policy User'];
+        list<User> userList = new list<user>();
+		
+		for (Policy_Holder__c newClient : newleads)    
+        {
+            if(ContactMap.containsKey(newClient.Id))
             {
-                PhEmailId.add(phEmails.Email__c);
+			   User u = new User();
+			   string nickname = newClient.Name__c;
+			   u.LastName = 'Client';
+			   u.FirstName = newClient.Name__c;
+			   u.Email = newClient.Email__c;
+			   u.Alias='Cit'+nickname.substring(1,4);
+			   u.CommunityNickname ='client'+newClient.Name;
+			   u.Username = newClient.Permanent_policy_holder_id__c+'@Lemonade.net';
+			   u.CommunityNickname = newClient.Name__c;
+			   u.ProfileId = ClientProfileId.id;
+		       u.EmailEncodingKey = 'ISO-8859-1';
+			   u.TimeZoneSidKey = 'America/Los_Angeles';
+	           u.LanguageLocaleKey  = 'en_US';
+			   u.LocaleSidKey = 'en_US';
+			   u.ContactId = ContactMap.get(newClient.Id);
+			   u.Agent_Record_ID__c= newClient.id;
+		       userList.add(u);
+                
             }
         }
-        Contact Con = [SELECT id FROM contact WHERE Email =:PhEmailId LIMIT 1];
-        for (Policy_Holder__c oldClient : oldRecords)
-			{
-				if(oldClient.Request_Status__c != 'Approved' && oldClient.Do_you_want_to_create_user_ID__c	!= 'Yes')
-				{
-					for (Policy_Holder__c newClient : NewRecords)
-					{
-						if(newClient.Request_Status__c == 'Approved' && newClient.Do_you_want_to_create_user_ID__c == 'Yes')
-						{
-								User u = new User();
-								string nickname = newClient.Name__c;
-								u.LastName = 'Client';
-								u.FirstName = newClient.Name__c;
-								u.Email = newClient.Email__c;
-								u.Alias='Cit'+nickname.substring(1,4);
-								u.CommunityNickname ='client'+newClient.Name;
-								u.Username = newClient.Permanent_policy_holder_id__c+'@Lemonade.net';
-								u.CommunityNickname = newClient.Name__c;
-								u.ProfileId = clientProfileId.id;
-								u.EmailEncodingKey = 'ISO-8859-1';
-								u.TimeZoneSidKey = 'America/Los_Angeles';
-								u.LanguageLocaleKey  = 'en_US';
-								u.LocaleSidKey = 'en_US';
-								u.ContactId = Con.id;
-								u.Agent_Record_ID__c= newClient.id;
-								userList.add(u);
-						}
-					}
-				}
-			}
-		insert userList;
-}
+        insert userList;
+    }
 }
