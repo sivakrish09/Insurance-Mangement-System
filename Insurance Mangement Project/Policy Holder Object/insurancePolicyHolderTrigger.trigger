@@ -1,18 +1,18 @@
-trigger insurancePolicyHolderTrigger on Policy_Holder__c (before insert, after update)
+trigger insurancePolicyHolderTrigger on Policy_Holder__c (before Update, after update)
 {
-	if(trigger.isAfter)
-    {
-        if(trigger.isUpdate)
-        {
-			insurancePolicyHolderHandler.createnewuser(trigger.new, trigger.old);
-        }
-    }
-    
+
     if(trigger.isBefore)
     {
-		if(trigger.isInsert)
+	if(trigger.isUpdate)
         {
-			insurancePolicyHolderHandler.contactCreate(trigger.new);
+		insurancePolicyHolderHandler.contactCreate(trigger.old,trigger.new);
         }
+    }
+    if(trigger.isAfter)
+    {
+	if(trigger.isUpdate)
+	{		
+		insurancePolicyHolderHandler.UserCreate(trigger.old,trigger.new);
+	}			
     }
 }
